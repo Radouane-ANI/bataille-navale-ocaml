@@ -1,0 +1,17 @@
+# Ignore le dossier _build
+_build/
+
+# Fichiers générés par Dune
+*.install
+*.merlin
+
+# Fichiers générés par les éditeurs/IDE
+*.swp
+*~
+.vscode/
+.idea/
+*.bak
+
+# Fichiers système
+.DS_Store
+

@@ -1,0 +1,1 @@
+type bot = game_view -> play
