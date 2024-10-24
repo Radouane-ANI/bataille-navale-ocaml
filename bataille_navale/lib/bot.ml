@@ -1,1 +1,1 @@
-type bot = game_view -> play
+(* type bot = game_view -> play *)

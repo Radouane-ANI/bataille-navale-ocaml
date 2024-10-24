@@ -1,1 +1,1 @@
-type player = name of String
+(* type player = name of String *)
