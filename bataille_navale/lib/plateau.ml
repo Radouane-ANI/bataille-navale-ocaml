@@ -6,6 +6,7 @@ type plateau = {
 }
 
 let plateau_vide = Array.init 10  (fun _ -> Array.init 10 (fun _ -> Vide))
+let flotte_standard = [5; 4; 3; 3; 2]
 
 let init_plateau () : plateau = 
   { grille = plateau_vide; ships = [] }
@@ -30,3 +31,6 @@ let placer_bateau_valide (p : plateau) (x : int) (y : int) (taille : int) (horiz
   true) 
 else false
 
+let flotte_complete (p : plateau) : bool =
+  let tailles_placees = List.map List.length p.ships in
+  List.sort compare tailles_placees = List.sort compare flotte_standard
