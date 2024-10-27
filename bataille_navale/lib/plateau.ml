@@ -1,5 +1,3 @@
-module Plateau = struct
-
 type bateau = (int * int) list
 type case = | Vide | Bateau of bateau | Touche | Rate
 type plateau = {
@@ -21,14 +19,14 @@ let emplacement_valide (p : plateau) (bateau : bateau) : bool =
     | _ -> false
   ) bateau
 
-let generer_bateau (x : int) (y : int) (longueur : int) (horizontal : bool) : bateau =
-  List.init longueur (fun i -> if horizontal then (x, y+i) else (x+i, y))
+let generer_bateau (x : int) (y : int) (taille : int) (horizontal : bool) : bateau =
+  List.init taille (fun i -> if horizontal then (x, y+i) else (x+i, y))
   
-let placer_bateau_valide (p : plateau) (x : int) (y : int) (longueur : int) (horizontal : bool) : bool =
-  let bateau = generer_bateau x y longueur horizontal in
+let placer_bateau_valide (p : plateau) (x : int) (y : int) (taille : int) (horizontal : bool) : bool =
+  let bateau = generer_bateau x y taille horizontal in
   if emplacement_valide p bateau then 
 (List.iter (fun (px,py) -> p.grille.(px).(py) <- Bateau (bateau)) bateau; 
   p.ships <- bateau :: p.ships;
   true) 
 else false
-end
+
