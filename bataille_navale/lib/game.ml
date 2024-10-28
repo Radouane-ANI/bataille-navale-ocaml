@@ -1,7 +1,3 @@
-module Game = struct
-  
-open Plateau
-
 type game_state = {
   board_p1 : Plateau.plateau;
   board_p2 : Plateau.plateau;
@@ -31,5 +27,3 @@ let view (game_state : game_state) (player : player) : Plateau.plateau =
 
 let act (_player : player) (_play : play) (_game_state : game_state) : outcome =
   Endgame None
-  
-end

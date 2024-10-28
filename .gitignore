@@ -11,6 +11,7 @@ _build/
 .vscode/
 .idea/
 *.bak
+.ocamlformat
 
 # Fichiers système
 .DS_Store
