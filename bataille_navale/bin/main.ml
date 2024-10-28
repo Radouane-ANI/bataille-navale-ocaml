@@ -1,6 +1,8 @@
 module Plateau = Bataille_navale.Plateau
 module Bot = Bataille_navale.Bot
 
+(** Demande à l'utilisateur de placer des bateaux sur le plateau.
+    @param p Le plateau sur lequel les bateaux doivent être placés. *)
 let demander_placement_bateau (p : Plateau.plateau) : unit =
   let rec demander_coordonnees (longueur : int) =
     print_endline ("Placement du bateau de taille " ^ string_of_int longueur);

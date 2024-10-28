@@ -2,6 +2,8 @@ open Game
 
 type bot = game_view -> play
 
+(** Place les bateaux sur le plateau de maniere aleatoire.
+    @param p Le plateau sur lequel les bateaux doivent être placés. *)
 let placer_flotte_aleatoire (p : Plateau.plateau) : unit =
   let random_orientation () = Random.bool () in
   let random_position () = Random.int 10 in
