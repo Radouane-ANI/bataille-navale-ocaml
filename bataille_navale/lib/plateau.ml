@@ -21,7 +21,7 @@ let plateau_vide = Array.init 10 (fun _ -> Array.init 10 (fun _ -> Vide))
 let flotte_standard = [ 5; 4; 3; 3; 2 ]
 
 (** Initialise un nouveau plateau vide, avec une grille vide et sans bateaux placés *)
-let init_plateau () : plateau = { grille = plateau_vide; ships = [] }
+let init_plateau () : plateau = { grille = Array.init 10 (fun _ -> Array.init 10 (fun _ -> Vide)); ships = [] }
 
 (** Vérifie si l'emplacement d'un bateau est valide sur le plateau donné.
     @param p Le plateau de jeu
@@ -89,3 +89,28 @@ let tir (p : plateau) ((x, y) : int * int) : unit =
   | Bateau _ -> p.grille.(x).(y) <- Touche
   | Touche -> p.grille.(x).(y) <- Touche
   | _ -> p.grille.(x).(y) <- Rate
+
+(** affiche le plateau dans un format lisible par l'utilisateur
+    @param p Le plateau de jeu*)
+let afficher_plateau (p : plateau) : unit =
+  let print_ligne1 =
+    print_string "   ";
+    for i = 0 to 9 do
+      print_string (" " ^ string_of_int i ^ " ")
+    done;
+    print_newline ()
+  in
+  let affiche_ligne i ligne =
+    print_string (" " ^ string_of_int i ^ " ");
+    Array.iter
+      (function
+        | Touche -> print_string " X "
+        | Bateau _ -> print_string " B "
+        | Rate -> print_string " O "
+        | Vide -> print_string " ~ ")
+      ligne;
+    print_endline ""
+  in
+  print_ligne1;
+  Array.iteri affiche_ligne p.grille;
+  print_endline ""

@@ -11,3 +11,4 @@ val placer_bateau_valide : plateau -> int -> int -> int -> bool -> bool
 val flotte_complete : plateau -> bool
 val obtenir_plateau_cache : plateau -> case array array
 val tir : plateau -> int * int -> unit
+val afficher_plateau : plateau -> unit
