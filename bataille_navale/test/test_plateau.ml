@@ -56,10 +56,51 @@ let test_qcheck_placements_aleatoires =
       (* Essaie de placer un bateau de taille 3 à la position aléatoire (x, y) *)
       let place = placer_bateau_valide plateau x y 3 true in
       (* Vérifie que si l'emplacement est valide, alors le placement a bien réussi *)
-      if emplacement_valide plateau (generer_bateau x y 3 true) then
-        place
+      if emplacement_valide plateau (generer_bateau x y 3 true) then place
       else true
       (* Si l'emplacement n'est pas valide, considère que le test passe *))
+
+(* Test pour obtenir_plateau_cache *)
+let test_obtenir_plateau_cache _ =
+  (* Création d'un plateau et placement de bateaux *)
+  let p = init_plateau () in
+  ignore (placer_bateau_valide p 0 0 3 true);
+  (* Bateau de taille 3 en haut à gauche *)
+  ignore (placer_bateau_valide p 5 5 2 false);
+  (* Marquage de quelques cases comme Touche et Rate *)
+  tir p (0, 1);
+  tir p (7, 7);
+  (* Obtenir la version cachée du plateau *)
+  let plateau_cache = obtenir_plateau_cache p in
+
+  (* Vérification que les cases de bateau sont bien marquées comme Vide *)
+  assert_equal plateau_cache.(0).(0) Vide;
+  assert_equal plateau_cache.(0).(2) Vide;
+  assert_equal plateau_cache.(5).(5) Vide;
+  assert_equal plateau_cache.(6).(5) Vide;
+
+  (* Vérification que les cases Touche et Rate restent inchangées *)
+  assert_equal plateau_cache.(0).(1) Touche;
+  assert_equal plateau_cache.(7).(7) Rate;
+
+  (* Vérification que les cases vides restent vides *)
+  assert_equal plateau_cache.(9).(9) Vide
+
+(* Test pour la fonction tir *)
+let test_tir _ =
+  let p = init_plateau () in
+  ignore (placer_bateau_valide p 0 0 3 true);
+  (* Place un bateau de taille 3 horizontalement en (0, 0) *)
+  tir p (0, 0);
+  (* Vérifie que la case (0, 0) est marquée comme Touche *)
+  tir p (1, 1);
+  (* Vérifie que la case (1, 1) est marquée comme Rate, car elle est vide *)
+  tir p (0, 1);
+  (* Vérifie qu'un tir sur une autre partie du bateau (0, 1) est également marqué comme Touche *)
+  let res = obtenir_plateau_cache p in
+  assert_equal res.(0).(0) Touche;
+  assert_equal res.(1).(1) Rate;
+  assert_equal res.(0).(1) Touche
 
 (* Regroupement de tous les tests *)
 let suite =
@@ -69,9 +110,10 @@ let suite =
          "Emplacement valide" >:: test_emplacement_valide;
          "Placement de bateau valide" >:: test_placer_bateau_valide;
          "Flotte complète" >:: test_flotte_complete;
+         "Obtenir plateau caché" >:: test_obtenir_plateau_cache;
+         "Tir" >:: test_tir;
        ]
 
-(* Lancement des tests *)
 (* Lancement des tests *)
 let run =
   run_test_tt_main suite;

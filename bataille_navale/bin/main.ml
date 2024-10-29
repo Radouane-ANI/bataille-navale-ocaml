@@ -1,5 +1,6 @@
 module Plateau = Bataille_navale.Plateau
 module Bot = Bataille_navale.Bot
+module Game = Bataille_navale.Game
 
 (** Demande à l'utilisateur de placer des bateaux sur le plateau.
     @param p Le plateau sur lequel les bateaux doivent être placés. *)
@@ -11,8 +12,9 @@ let demander_placement_bateau (p : Plateau.plateau) : unit =
     let y = read_int () in
     print_endline "Le bateau est-il horizontal ? (o/n) :";
     let horizontal = read_line () = "o" in
-    if Plateau.placer_bateau_valide p y x longueur horizontal then
-      print_endline "Bateau placé avec succès !"
+    if Plateau.placer_bateau_valide p y x longueur horizontal then (
+      print_endline "Bateau placé avec succès !";
+      Plateau.afficher_plateau p)
     else (
       print_endline "Placement invalide. Veuillez réessayer.";
       demander_coordonnees longueur)
@@ -24,4 +26,5 @@ let () =
   let plateau_joueur = Plateau.init_plateau () in
   let plateau_bot = Plateau.init_plateau () in
   demander_placement_bateau plateau_joueur;
-  Bot.placer_flotte_aleatoire plateau_bot
+  Bot.placer_flotte_aleatoire plateau_bot;
+  Plateau.afficher_plateau plateau_bot
