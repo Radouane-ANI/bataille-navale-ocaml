@@ -69,3 +69,23 @@ let placer_bateau_valide (p : plateau) (x : int) (y : int) (taille : int)
 let flotte_complete (p : plateau) : bool =
   let tailles_placees = List.map List.length p.ships in
   List.sort compare tailles_placees = List.sort compare flotte_standard
+
+(** Génère une version cachée du plateau en masquant les cases où se trouvent les bateaux.
+    Les cases marquées "Touche" ou "Rate" restent visibles, tandis que les cases avec des bateaux sont affichées comme "Vide".
+    @param p Le plateau de jeu
+    @return Une nouvelle grille où toutes les cases de bateaux sont masquées *)
+let obtenir_plateau_cache (p : plateau) : case array array =
+  Array.map
+    (fun t ->
+      Array.map (fun c -> match c with Bateau _ -> Vide | etats -> etats) t)
+    p.grille
+
+(** Marque une case spécifique du plateau comme "Touche" si elle contient un bateau,
+    ou "Rate" si elle est vide. Met à jour directement le plateau.
+    @param p Le plateau de jeu
+    @param (x, y) Les coordonnées de la case visée *)
+let tir (p : plateau) ((x, y) : int * int) : unit =
+  match p.grille.(x).(y) with
+  | Bateau _ -> p.grille.(x).(y) <- Touche
+  | Touche -> p.grille.(x).(y) <- Touche
+  | _ -> p.grille.(x).(y) <- Rate
