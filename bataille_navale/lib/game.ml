@@ -23,24 +23,4 @@ let view (game_state : game_state) (player : player) : game_view =
 let act (_player : player) (_play : play) (_game_state : game_state) : outcome =
   Endgame None
 
-let display (game_view : game_view) : unit =
-  let print_ligne1 =
-    print_string "   ";
-    for i = 0 to 9 do
-      print_string (" " ^ string_of_int i ^ " ")
-    done;
-    print_newline ()
-  in
-  let affiche_ligne i ligne =
-    print_string (" " ^ string_of_int i ^ " ");
-    Array.iter
-      (function
-        | Plateau.Touche -> print_string " X "
-        | Plateau.Rate -> print_string " O "
-        | _ -> print_string " ~ ")
-      ligne;
-    print_endline ""
-  in
-  print_ligne1;
-  Array.iteri affiche_ligne game_view;
-  print_endline ""
+let display (game_view : game_view) : unit = Plateau.afficher_grille game_view
