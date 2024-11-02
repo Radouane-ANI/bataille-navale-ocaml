@@ -7,6 +7,7 @@ type case =
   | Bateau of bateau  (** La case contient un bateau spécifique *)
   | Touche  (** La case a été touchée par un tir *)
   | Rate  (** La case a été visée par un tir mais elle est vide *)
+  | Coule  (** La case contient un bateau qui a coule *)
 
 type plateau = {
   grille : case array array;  (** Grille représentant les cases du plateau *)
@@ -86,13 +87,13 @@ let obtenir_plateau_cache (p : plateau) : case array array =
     @param (x, y) Les coordonnées de la case visée *)
 let tir (p : plateau) ((x, y) : int * int) : unit =
   match p.grille.(x).(y) with
-  | Bateau _ -> p.grille.(x).(y) <- Touche
-  | Touche -> p.grille.(x).(y) <- Touche
-  | _ -> p.grille.(x).(y) <- Rate
+  | Bateau _ -> p.grille.(x).(y) <- Touche (* TODO : gere le cas coule*)
+  | Vide -> p.grille.(x).(y) <- Rate
+  | _ -> ()
 
-(** affiche le plateau dans un format lisible par l'utilisateur
-    @param p Le plateau de jeu*)
-let afficher_plateau (p : plateau) : unit =
+(** affiche une grille dans un format lisible par l'utilisateur
+    @param g une grille du jeu*)
+let afficher_grille (g : case array array) : unit =
   let print_ligne1 =
     print_string "   ";
     for i = 0 to 9 do
@@ -104,13 +105,18 @@ let afficher_plateau (p : plateau) : unit =
     print_string (" " ^ string_of_int i ^ " ");
     Array.iter
       (function
-        | Touche -> print_string " X "
-        | Bateau _ -> print_string " B "
-        | Rate -> print_string " O "
-        | Vide -> print_string " ~ ")
+        | Touche -> print_string "\027[31m X \027[0m"
+        | Bateau _ -> print_string "\027[32m b \027[0m"
+        | Coule -> print_string "\027[31m B \027[0m "
+        | Rate -> print_string "\027[33m O \027[0m"
+        | Vide -> print_string "\027[34m ~ \027[0m")
       ligne;
     print_endline ""
   in
   print_ligne1;
-  Array.iteri affiche_ligne p.grille;
+  Array.iteri affiche_ligne g;
   print_endline ""
+
+(** affiche le plateau dans un format lisible par l'utilisateur
+    @param p Le plateau de jeu*)
+let afficher_plateau (p : plateau) : unit = afficher_grille p.grille

@@ -1,5 +1,5 @@
 type bateau
-type case = Vide | Bateau of bateau | Touche | Rate
+type case = Vide | Bateau of bateau | Touche | Rate | Coule
 type plateau
 
 val plateau_vide : case array array
@@ -12,3 +12,4 @@ val flotte_complete : plateau -> bool
 val obtenir_plateau_cache : plateau -> case array array
 val tir : plateau -> int * int -> unit
 val afficher_plateau : plateau -> unit
+val afficher_grille : case array array -> unit
