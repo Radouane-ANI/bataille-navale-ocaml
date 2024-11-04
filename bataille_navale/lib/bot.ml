@@ -16,3 +16,9 @@ let placer_flotte_aleatoire (p : Plateau.plateau) : unit =
     in
     try_place ()
   ) Plateau.flotte_standard
+
+(* méthode qui envoie une frappe aléatoire (version joueur vs bot)*)
+let placer_frappe_aleatoire () : (int * int) =
+  let x = Random.int 10 in
+  let y = Random.int 10 in
+  (x,y)
