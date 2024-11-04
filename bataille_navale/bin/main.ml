@@ -54,38 +54,35 @@ let init_mode_playervsplayer(p1 : Plateau.plateau) (p2 : Plateau.plateau) : unit
   demander_placement_bateau p2
 
 (* méthode de la boucle principale du jeu*)
-let rec boucle_jeu (gs : Game.game_state) (gv : Game.game_view) =
-    print_endline "Coordonnées du prochain tir : ";
-    let tir_x = read_line() in 
-    let tir_y = read_line() in
-    clear();
-    (* initialise une variable du plateau de l'adversaire afin de l'afficher plus tard *)
-    let plateau_ennemi = Game.plateau_a_attaquer gs in
-    (* ligne qui tire sur une case sur le plateau de l'adversaire avec les coordonnées recupérés avec read_line()*)
-    Plateau.tir plateau_ennemi (int_of_string tir_y, int_of_string tir_x);
-    (* affiche le plateau de l'adversaire après le tir avec les nouveaux états *)
-    Plateau.afficher_plateau_in_game plateau_ennemi;
-    (* méthode qui termine le programme si la partie est terminée ou continue sinon*)
-    if Plateau.endgame plateau_ennemi then (
-      print_endline "Fin du jeu";
-      exit 0
-    ) else (
-      freeze 3.;
-      clear();
-      match gs.current_player with
-      | Player1 -> 
-          print_endline "Plateau du joueur 1, au tour du joueur 2 de jouer.";
-          Plateau.afficher_plateau_in_game gs.board_p1; 
-          gs.current_player <- Player2
-      | Player2 -> 
-          print_endline "Plateau du joueur 2, au tour du joueur 1 de jouer.";
-          Plateau.afficher_plateau_in_game gs.board_p2; 
-          gs.current_player <- Player1;
-      ;
-      (* appel recursif de la boucle principale après avoir changer l'état du current_player de game_state dans Game*)
-      boucle_jeu gs gv 
-    )
-  
+let rec boucle_jeu (gs : Game.game_state) (pl : Game.player) : unit =
+  (match pl with
+  | Game.Player1 -> print_endline "Plateau du joueur 1, au tour du joueur 2 de jouer."
+  | Game.Player2 -> print_endline "Plateau du joueur 2, au tour du joueur 1 de jouer.");
+  Game.display (Game.view gs pl);
+  print_endline "Coordonnées du prochain tir : ";
+  let tir_x = read_int () in
+  let tir_y = read_int () in
+  let display_and_next new_gs next_player =
+    Game.display (Game.view new_gs pl);
+    freeze 3.;
+    clear ();  
+    boucle_jeu new_gs next_player
+  in
+  (* Processus pour gérer les différents résultats de `Game.act` *)
+  let next_move next_player =
+    match Game.act pl (tir_y, tir_x) gs with
+    | Endgame _ -> print_endline "Fin du jeu"
+    | Next new_gs ->
+        display_and_next new_gs next_player
+    | _ ->
+        (* Cas où le tir n'entraîne pas de changement de joueur *)
+        print_endline "Aucun changement d'état, rejouez.";
+        display_and_next gs  pl
+  in
+  (* Déterminer le joueur suivant en fonction du joueur actuel *)
+  match pl with
+  | Game.Player1 -> next_move Game.Player2
+  | Game.Player2 -> next_move Game.Player1
   
 let () =
   Random.self_init ();
@@ -98,12 +95,5 @@ let () =
   ; *)
   init_mode_playervsplayer plateau_1 plateau_2;
   print_endline "Bateaux placés, place au jeu !";
-  freeze 5.;
-  clear();
   let new_game = Game.init_game plateau_1 plateau_2 in
-  let game_v = Game.view new_game new_game.current_player in
-  print_endline "Plateau du joueur 2, au tour du joueur 1 de jouer.";
-  Plateau.afficher_plateau_in_game plateau_1;
-  boucle_jeu new_game game_v
-  
-  
+  boucle_jeu new_game Game.Player1
