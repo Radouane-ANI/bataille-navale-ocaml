@@ -8,11 +8,13 @@ and player = Player1 | Player2
 
 type game_view = Plateau.case array array
 type play = int * int
-type error = Position_out_of_bounds | Not_Player_Turn
+type error = Position_out_of_bounds | Not_Player_Turn | Invalid_board
 type outcome = Next of game_state | Error of error | Endgame of player option
 
-let init_game (board_p1 : Plateau.plateau) (board_p2 : Plateau.plateau) =
-  { board_p1; board_p2; current_player = Player1 }
+let init_game (board_p1 : Plateau.plateau) (board_p2 : Plateau.plateau) :outcome =
+  if Plateau.flotte_complete board_p1 && Plateau.flotte_complete board_p1 then
+    Next { board_p1; board_p2; current_player = Player1 }
+  else Error Invalid_board
 
 let view (game_state : game_state) (player : player) : game_view =
   (* Retourne le plateau de l'adversaire caché pour le joueur en cours *)

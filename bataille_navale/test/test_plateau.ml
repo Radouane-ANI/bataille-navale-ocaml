@@ -102,6 +102,28 @@ let test_tir _ =
   assert_equal res.(1).(1) Rate;
   assert_equal res.(0).(1) Touche
 
+(* Test pour vérifier si la partie est terminée *)
+let test_endgame _ =
+  let p = init_plateau () in
+  (* Placer des bateaux pour tester *)
+  List.iteri
+    (fun i taille -> ignore (placer_bateau_valide p i 0 taille true))
+    flotte_standard;
+  (* Tirer sur toutes les cases des bateaux pour les couler *)
+  List.iter (fun i -> tir p (0, i)) (List.init 5 (fun x -> x));
+  List.iter (fun i -> tir p (1, i)) (List.init 4 (fun x -> x));
+  List.iter (fun i -> tir p (2, i)) (List.init 3 (fun x -> x));
+  List.iter (fun i -> tir p (3, i)) (List.init 3 (fun x -> x));
+  List.iter (fun i -> tir p (4, i)) (List.init 2 (fun x -> x));
+  (* Vérifier si la partie est terminée *)
+  assert_bool "La partie est terminée (tous les bateaux sont coulés)"
+    (endgame p);
+  (* Tirer sur une case qui ne contient pas de bateau *)
+  tir p (5, 0);
+  (* Vérifier à nouveau que la partie est toujours terminée *)
+  assert_bool "La partie est toujours terminée après tir sur case vide"
+    (endgame p)
+
 (* Regroupement de tous les tests *)
 let suite =
   "Test Plateau Bataille Navale"
@@ -112,6 +134,8 @@ let suite =
          "Flotte complète" >:: test_flotte_complete;
          "Obtenir plateau caché" >:: test_obtenir_plateau_cache;
          "Tir" >:: test_tir;
+         "Test de fin de jeu" >:: test_endgame;
+         (* Nouveau test pour endgame *)
        ]
 
 (* Lancement des tests *)

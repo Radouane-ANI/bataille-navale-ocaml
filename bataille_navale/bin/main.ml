@@ -86,14 +86,24 @@ let rec boucle_jeu (gs : Game.game_state) (pl : Game.player) : unit =
   
 let () =
   Random.self_init ();
-  let plateau_1 = Plateau.init_plateau() in
-  let plateau_2 = Plateau.init_plateau() in
-  (* let mode = init_mode() in
+  let rec start () = 
+    let plateau_1 = Plateau.init_plateau () in
+    let plateau_2 = Plateau.init_plateau () in
+
+    (* Uncomment this section if you want to initialize different modes
+    let mode = init_mode () in
     match mode with 
-  | true -> init_mode_playervsbot plateau_1 plateau_2
-  | false -> init_mode_playervsplayer plateau_1 plateau_2;
-  ; *)
-  init_mode_playervsplayer plateau_1 plateau_2;
-  print_endline "Bateaux placés, place au jeu !";
-  let new_game = Game.init_game plateau_1 plateau_2 in
-  boucle_jeu new_game Game.Player1
+    | true -> init_mode_playervsbot plateau_1 plateau_2
+    | false -> init_mode_playervsplayer plateau_1 plateau_2;
+    *)
+
+    (* Initialize for player vs player mode directly *)
+    init_mode_playervsplayer plateau_1 plateau_2;
+    print_endline "Bateaux placés, place au jeu !";
+
+    let new_game = Game.init_game plateau_1 plateau_2 in
+    match new_game with
+    | Next gs -> boucle_jeu gs Game.Player1
+    | _ -> start () (* Recursive call to restart the game if needed *)
+  in
+  start ()
