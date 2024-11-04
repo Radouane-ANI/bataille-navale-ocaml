@@ -1,1 +1,1 @@
-let () = Test_plateau.run
+let () = Test_plateau.run; Test_game.run

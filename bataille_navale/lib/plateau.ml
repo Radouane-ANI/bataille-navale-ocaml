@@ -110,9 +110,9 @@ let tir (p : plateau) ((x, y) : int * int) : unit =
 
 (* méthode qui vérifie si la partie est terminée (si un plateau se retrouve avec tout ses bateaux coulés)*)
 let endgame (p : plateau) : bool = List.for_all (fun x -> x = []) p.ships
+
 (* affiche une grille dans un format lisible par l'utilisateur
     @param g une grille du jeu*)
-
 let afficher_grille (g : case array array) =
   let print_ligne1 =
     print_string "   ";
@@ -140,30 +140,3 @@ let afficher_grille (g : case array array) =
 (** affiche le plateau dans un format lisible par l'utilisateur
     @param p Le plateau de jeu*)
 let afficher_plateau (p : plateau) : unit = afficher_grille p.grille
-
-(* méthode qui affiche un plateau sans les bateaux pour le cours du jeu*)
-let afficher_plateau_in_game (p : plateau) : unit = 
-  let afficher_grille_in_game (g : case array array) =
-    let print_ligne1 =
-      print_string "   ";
-      for i = 0 to 9 do
-        print_string (" " ^ string_of_int i ^ " ")
-      done;
-      print_newline ()
-    in
-    let affiche_ligne i ligne =
-      print_string (" " ^ string_of_int i ^ " ");
-      Array.iter
-        (function
-          | Touche -> print_string "\027[31m X \027[0m"
-          | Bateau _ | Vide -> print_string "\027[34m ~ \027[0m"
-          | Coule -> print_string "\027[31m B \027[0m "
-          | Rate -> print_string "\027[33m O \027[0m"
-        )
-        ligne;
-      print_endline ""
-    in
-    print_ligne1;
-    Array.iteri affiche_ligne g;
-    print_endline ""
-  in afficher_grille_in_game p.grille
