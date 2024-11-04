@@ -85,15 +85,35 @@ let obtenir_plateau_cache (p : plateau) : case array array =
     ou "Rate" si elle est vide. Met à jour directement le plateau.
     @param p Le plateau de jeu
     @param (x, y) Les coordonnées de la case visée *)
+
+(* méthode qui supprime une case ou se trouve un bateau de la liste de bateaux s'il est touché par une frappe *)
+let rec supp_ships_list (list : (int * int) list list) (coord : int * int) : (int * int) list list =
+  match list with
+  |[] -> []
+  |hd::tl -> 
+    let sub = List.filter ((<>) coord) hd in
+    sub :: supp_ships_list tl coord
+
+(* méthode qui mets à jour p.ships avec la méthode precedente quand un bateau est touché *)
+let bateau_touche (p : plateau) ((x,y) : int * int) : unit = 
+  p.ships <- supp_ships_list p.ships (x, y)
+
+(* méthode qui tire une frappe sur une case, avec une phrase qui s'affiche pour chaque cas *)
 let tir (p : plateau) ((x, y) : int * int) : unit =
   match p.grille.(x).(y) with
-  | Bateau _ -> p.grille.(x).(y) <- Touche (* TODO : gere le cas coule*)
-  | Vide -> p.grille.(x).(y) <- Rate
-  | _ -> ()
+  | Bateau _ -> print_endline "Bateau touché !"; p.grille.(x).(y) <- Touche; 
+  bateau_touche p (x, y);
+  | Vide -> print_endline "Aucune bateau atteint"; p.grille.(x).(y) <- Rate
+  | Touche -> print_endline "Bateau déjà touché à cette position"
+  | Rate -> print_endline "Position déjà frappé"
+  | Coule -> print_endline "Bateau déjà coulé à cette position" (* Cas Coule à finir*)
 
-(** affiche une grille dans un format lisible par l'utilisateur
+(* méthode qui vérifie si la partie est terminée (si un plateau se retrouve avec tout ses bateaux coulés)*)
+let endgame (p : plateau) : bool = List.for_all (fun x -> x = []) p.ships
+(* affiche une grille dans un format lisible par l'utilisateur
     @param g une grille du jeu*)
-let afficher_grille (g : case array array) : unit =
+
+let afficher_grille (g : case array array) =
   let print_ligne1 =
     print_string "   ";
     for i = 0 to 9 do
@@ -120,3 +140,30 @@ let afficher_grille (g : case array array) : unit =
 (** affiche le plateau dans un format lisible par l'utilisateur
     @param p Le plateau de jeu*)
 let afficher_plateau (p : plateau) : unit = afficher_grille p.grille
+
+(* méthode qui affiche un plateau sans les bateaux pour le cours du jeu*)
+let afficher_plateau_in_game (p : plateau) : unit = 
+  let afficher_grille_in_game (g : case array array) =
+    let print_ligne1 =
+      print_string "   ";
+      for i = 0 to 9 do
+        print_string (" " ^ string_of_int i ^ " ")
+      done;
+      print_newline ()
+    in
+    let affiche_ligne i ligne =
+      print_string (" " ^ string_of_int i ^ " ");
+      Array.iter
+        (function
+          | Touche -> print_string "\027[31m X \027[0m"
+          | Bateau _ | Vide -> print_string "\027[34m ~ \027[0m"
+          | Coule -> print_string "\027[31m B \027[0m "
+          | Rate -> print_string "\027[33m O \027[0m"
+        )
+        ligne;
+      print_endline ""
+    in
+    print_ligne1;
+    Array.iteri affiche_ligne g;
+    print_endline ""
+  in afficher_grille_in_game p.grille

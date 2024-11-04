@@ -1,7 +1,7 @@
 type game_state = {
   board_p1 : Plateau.plateau;
   board_p2 : Plateau.plateau;
-  current_player : player;
+  mutable current_player : player;
 }
 
 and player = Player1 | Player2
@@ -24,3 +24,9 @@ let act (_player : player) (_play : play) (_game_state : game_state) : outcome =
   Endgame None
 
 let display (game_view : game_view) : unit = Plateau.afficher_grille game_view
+
+(* méthode qui renvoie le plateau de l'adversaire *)
+let plateau_a_attaquer (gs : game_state) : Plateau.plateau = 
+  match gs.current_player with
+  | Player1 -> gs.board_p2
+  | Player2 -> gs.board_p1
