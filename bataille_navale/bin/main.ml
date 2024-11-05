@@ -8,10 +8,10 @@ let demander_placement_bateau (p : Plateau.plateau) : unit =
   let rec demander_coordonnees (longueur : int) =
     print_endline ("Placement du bateau de taille " ^ string_of_int longueur);
     print_endline "Entrez les coordonnées de départ du bateau (x y) :";
-    let x = read_int () in
-    let y = read_int () in
+    let x = print_string "x : "; Excp.coord() in
+    let y = print_string "y : "; Excp.coord() in
     print_endline "Le bateau est-il horizontal ? (o/n) :";
-    let horizontal = read_line () = "o" in
+    let horizontal = Excp.orientation_bateau() in
     if Plateau.placer_bateau_valide p y x longueur horizontal then (
       print_endline "Bateau placé avec succès !";
       Plateau.afficher_plateau p)
@@ -60,8 +60,8 @@ let rec boucle_jeu (gs : Game.game_state) (pl : Game.player) : unit =
   | Game.Player2 -> print_endline "Plateau du joueur 2, au tour du joueur 1 de jouer.");
   Game.display (Game.view gs pl);
   print_endline "Coordonnées du prochain tir : ";
-  let tir_x = read_int () in
-  let tir_y = read_int () in
+  let tir_x = print_string "x : "; Excp.coord() in
+  let tir_y = print_string "y : "; Excp.coord() in
   let display_and_next new_gs next_player =
     Game.display (Game.view new_gs pl);
     freeze 3.;
@@ -99,6 +99,7 @@ let () =
 
     (* Initialize for player vs player mode directly *)
     init_mode_playervsplayer plateau_1 plateau_2;
+    clear();
     print_endline "Bateaux placés, place au jeu !";
 
     let new_game = Game.init_game plateau_1 plateau_2 in
