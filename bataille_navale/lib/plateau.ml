@@ -81,32 +81,33 @@ let obtenir_plateau_cache (p : plateau) : case array array =
       Array.map (fun c -> match c with Bateau _ -> Vide | etats -> etats) t)
     p.grille
 
-(** Marque une case spécifique du plateau comme "Touche" si elle contient un bateau,
-    ou "Rate" si elle est vide. Met à jour directement le plateau.
-    @param p Le plateau de jeu
-    @param (x, y) Les coordonnées de la case visée *)
+(* marque les case du plateau ou se trouve le bateau comme coule*)
+let marque_coule (bateau : bateau) (p : plateau) : unit =
+  List.iter (fun (px, py) -> p.grille.(px).(py) <- Coule) bateau
 
-(* méthode qui supprime une case ou se trouve un bateau de la liste de bateaux s'il est touché par une frappe *)
-let rec supp_ships_list (list : (int * int) list list) (coord : int * int) : (int * int) list list =
-  match list with
-  |[] -> []
-  |hd::tl -> 
-    let sub = List.filter ((<>) coord) hd in
-    sub :: supp_ships_list tl coord
-
-(* méthode qui mets à jour p.ships avec la méthode precedente quand un bateau est touché *)
-let bateau_touche (p : plateau) ((x,y) : int * int) : unit = 
-  p.ships <- supp_ships_list p.ships (x, y)
+(* méthode qui mets à jour p.ships avec la méthode marque_coule quand un bateau est touché *)
+let bateau_touche (p : plateau) (b : bateau) : unit =
+  let est_coule =
+    List.fold_left (fun _ (x, y) -> p.grille.(x).(y) = Touche) true b
+  in
+  if est_coule then (
+    marque_coule b p;
+    p.ships <- List.filter (( <> ) b) p.ships)
+  else ()
 
 (* méthode qui tire une frappe sur une case, avec une phrase qui s'affiche pour chaque cas *)
 let tir (p : plateau) ((x, y) : int * int) : unit =
   match p.grille.(x).(y) with
-  | Bateau _ -> print_endline "Bateau touché !"; p.grille.(x).(y) <- Touche; 
-  bateau_touche p (x, y);
-  | Vide -> print_endline "Aucune bateau atteint"; p.grille.(x).(y) <- Rate
+  | Bateau b ->
+      print_endline "Bateau touché !";
+      p.grille.(x).(y) <- Touche;
+      bateau_touche p b
+  | Vide ->
+      print_endline "Aucune bateau atteint";
+      p.grille.(x).(y) <- Rate
   | Touche -> print_endline "Bateau déjà touché à cette position"
   | Rate -> print_endline "Position déjà frappé"
-  | Coule -> print_endline "Bateau déjà coulé à cette position" (* Cas Coule à finir*)
+  | Coule -> print_endline "Bateau déjà coulé à cette position"
 
 (* méthode qui vérifie si la partie est terminée (si un plateau se retrouve avec tout ses bateaux coulés)*)
 let endgame (p : plateau) : bool = List.for_all (fun x -> x = []) p.ships
@@ -127,7 +128,7 @@ let afficher_grille (g : case array array) =
       (function
         | Touche -> print_string "\027[31m X \027[0m"
         | Bateau _ -> print_string "\027[32m b \027[0m"
-        | Coule -> print_string "\027[31m B \027[0m "
+        | Coule -> print_string "\027[31m B \027[0m"
         | Rate -> print_string "\027[33m O \027[0m"
         | Vide -> print_string "\027[34m ~ \027[0m")
       ligne;
