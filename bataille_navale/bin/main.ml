@@ -22,7 +22,11 @@ let demander_placement_bateau (p : Plateau.plateau) : unit =
   List.iter demander_coordonnees Plateau.flotte_standard
 
 (* méthode qui appelle la commande clear sur le terminal grâce au module Sys*)
-let clear() : unit = ignore (Sys.command "clear")
+let clear() : unit = 
+  let clear =
+    if Sys.os_type = "Win32" then "cls"
+    else "clear"
+  in ignore (Sys.command clear)
 
 (* méthode pour geler le programme *)
 let freeze(duree : float) : unit =
