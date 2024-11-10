@@ -88,7 +88,7 @@ let marque_coule (bateau : bateau) (p : plateau) : unit =
 (* méthode qui mets à jour p.ships avec la méthode marque_coule quand un bateau est touché *)
 let bateau_touche (p : plateau) (b : bateau) : unit =
   let est_coule =
-    List.fold_left (fun _ (x, y) -> p.grille.(x).(y) = Touche) true b
+    List.fold_left (fun acc (x, y) -> acc &&p.grille.(x).(y) = Touche) true b
   in
   if est_coule then (
     marque_coule b p;
