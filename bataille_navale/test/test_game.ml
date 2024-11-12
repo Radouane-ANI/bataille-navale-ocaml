@@ -123,6 +123,39 @@ let test_act_valid_turn _ =
           assert_failure "Echec de l'initialisation pour le test act_valid_turn"
       
 
+(** test supplementaire de Rayan Belhassen **)     
+
+(* Test pour un tir sur une case déjà attaquée *)
+let test_act_already_attacked_position _ =
+  let board_p1 = Plateau.init_plateau () in
+  let board_p2 = Plateau.init_plateau () in
+  List.iteri
+    (fun i taille -> ignore (Plateau.placer_bateau_valide board_p1 i i taille true))
+    Plateau.flotte_standard;
+  List.iteri
+    (fun i taille -> ignore (Plateau.placer_bateau_valide board_p2 i i taille true))
+    Plateau.flotte_standard;
+  match init_game board_p1 board_p2 with
+  | Next game_state -> (
+      match act Player1 (0, 0) game_state with
+      | Next game_state' -> (
+          match act Player1 (0, 0) game_state' with
+          | Next _ -> assert_bool "Tir répété accepté sans changer l'état" true
+          | _ -> assert_bool "Pas d'erreur pour tir répété" true)
+      | _ -> assert_failure "Le coup initial de Player1 n'a pas réussi")
+  | _ -> assert_failure "Échec de l'initialisation pour le test act_already_attacked_position"
+
+
+(* Test pour l'initialisation avec un plateau vide *)
+let test_init_game_with_empty_boards _ =
+  let board_p1 = Plateau.init_plateau () in
+  let board_p2 = Plateau.init_plateau () in
+  match init_game board_p1 board_p2 with
+  | Error Invalid_board -> ()
+  | _ ->
+      assert_failure "Initialisation réussie malgré des plateaux vides"
+
+
 (* Regroupement de tous les tests *)
 let suite =
   "Test Game State Bataille Navale"
@@ -136,7 +169,10 @@ let suite =
          "Act Not Player Turn" >:: test_act_invalid_turn;
          "Act Position Out Of Bounds" >:: test_act_position_out_of_bounds;
          "Act Valid Turn" >:: test_act_valid_turn;
+        (* test suplementaire*)
+        "Act Already Attacked Position" >:: test_act_already_attacked_position;
+        "Initialisation du jeu avec plateaux vides" >:: test_init_game_with_empty_boards
        ]
 
 (* Lancement des tests *)
-let run = run_test_tt_main suite
+let run = run_test_tt_main suite 
