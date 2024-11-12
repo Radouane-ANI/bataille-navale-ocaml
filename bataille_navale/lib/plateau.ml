@@ -19,7 +19,7 @@ type plateau = {
 let plateau_vide = Array.init 10 (fun _ -> Array.init 10 (fun _ -> Vide))
 
 (** La flotte standard représente la taille de chaque bateau requis pour le jeu *)
-let flotte_standard = [ 2 ]
+let flotte_standard = [ 5; 4; 3; 3; 2 ]
 
 (** Initialise un nouveau plateau vide, avec une grille vide et sans bateaux placés *)
 let init_plateau () : plateau = { grille = Array.init 10 (fun _ -> Array.init 10 (fun _ -> Vide)); ships = [] }
