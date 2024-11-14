@@ -1,0 +1,16 @@
+stages:
+  - test
+
+test:
+  stage: test
+  image: debian:latest
+  before_script:
+    - apt-get update -y
+    - apt-get install -y opam m4
+    - opam init -y --disable-sandboxing
+    - opam switch create 3.14.0
+    - eval $(opam env)
+    - opam install dune qcheck -y  
+  script:
+    - dune build
+    - dune runtest
