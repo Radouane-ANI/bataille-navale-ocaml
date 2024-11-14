@@ -8,7 +8,7 @@ test:
     - apt-get update -y
     - apt-get install -y opam m4
     - opam init -y --disable-sandboxing
-    - opam switch create 3.14.0
+    - opam switch create 4.13.1
     - eval $(opam env)
     - opam install dune qcheck -y  
   script:
