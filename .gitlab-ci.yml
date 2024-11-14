@@ -5,6 +5,7 @@ test:
   stage: test
   image: debian:latest
   before_script:
+    - cd bataille_navale/
     - apt-get update -y
     - apt-get install -y opam m4
     - opam init -y --disable-sandboxing
