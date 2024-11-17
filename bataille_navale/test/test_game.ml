@@ -121,7 +121,30 @@ let test_act_valid_turn _ =
             "Le coup valide de Player1 n'a pas abouti à un changement de joueur")
       | _ ->
           assert_failure "Echec de l'initialisation pour le test act_valid_turn"
-      
+
+(* Test pour la branche act où Player2 joue un tour valide *)
+let test_act_player2_valid_turn _ =
+  let board_p1 = Plateau.init_plateau () in
+  let board_p2 = Plateau.init_plateau () in
+  List.iteri
+    (fun i taille -> ignore (Plateau.placer_bateau_valide board_p1 i i taille true))
+    Plateau.flotte_standard;
+  List.iteri
+    (fun i taille -> ignore (Plateau.placer_bateau_valide board_p2 i i taille true))
+    Plateau.flotte_standard;
+  match init_game board_p1 board_p2 with
+  | Next game_state -> (
+      (* Player1 joue un coup valide *)
+      match act Player1 (0, 0) game_state with
+      | Next game_state' -> (
+          (* Maintenant, Player2 peut jouer un tour valide *)
+          match act Player2 (0, 0) game_state' with
+          | Next _ -> assert_bool "Tour valide de Player2 réussi" true
+          | _ -> assert_failure "Le tour valide de Player2 n'a pas abouti"
+        )
+      | _ -> assert_failure "Le coup de Player1 a échoué pour test_act_player2_valid_turn"
+    )
+  | _ -> assert_failure "Echec de l'initialisation pour le test_act_player2_valid_turn"
 
 (** test supplementaire de Rayan Belhassen **)     
 
@@ -160,19 +183,19 @@ let test_init_game_with_empty_boards _ =
 let suite =
   "Test Game State Bataille Navale"
   >::: [
-         "Initialisation du jeu avec flottes complètes"
-         >:: test_init_game_with_complete_fleets;
-         "Initialisation du jeu avec flotte incomplète"
-         >:: test_init_game_with_incomplete_fleet;
-         "Initialisation du jeu avec deux flottes incomplètes"
-         >:: test_init_game_with_both_incomplete_fleets;
+         "Initialisation du jeu avec flottes complètes" >:: test_init_game_with_complete_fleets;
+         "Initialisation du jeu avec flotte incomplète" >:: test_init_game_with_incomplete_fleet;
+         "Initialisation du jeu avec deux flottes incomplètes" >:: test_init_game_with_both_incomplete_fleets;
          "Act Not Player Turn" >:: test_act_invalid_turn;
          "Act Position Out Of Bounds" >:: test_act_position_out_of_bounds;
          "Act Valid Turn" >:: test_act_valid_turn;
         (* test suplementaire*)
         "Act Already Attacked Position" >:: test_act_already_attacked_position;
-        "Initialisation du jeu avec plateaux vides" >:: test_init_game_with_empty_boards
+        "Initialisation du jeu avec plateaux vides" >:: test_init_game_with_empty_boards;
+         "Act Player2 Valid Turn" >:: test_act_player2_valid_turn;
        ]
+
+(*Pour réaliser les tests de l'affichage, il faut réaliser des fichiers .expected qui testera les fonctions d'affichage display et view pour les deux joueurs*)
 
 (* Lancement des tests *)
 let run = run_test_tt_main suite 
