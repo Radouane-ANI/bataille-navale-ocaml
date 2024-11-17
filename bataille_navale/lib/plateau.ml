@@ -99,15 +99,15 @@ let bateau_touche (p : plateau) (b : bateau) : unit =
 let tir (p : plateau) ((x, y) : int * int) : unit =
   match p.grille.(x).(y) with
   | Bateau b ->
-      print_endline "Bateau touché !";
+      Log.log "Bateau touché !";
       p.grille.(x).(y) <- Touche;
       bateau_touche p b
   | Vide ->
-      print_endline "Aucune bateau atteint";
+      Log.log "Aucun bateau atteint";
       p.grille.(x).(y) <- Rate
-  | Touche -> print_endline "Bateau déjà touché à cette position"
-  | Rate -> print_endline "Position déjà frappé"
-  | Coule -> print_endline "Bateau déjà coulé à cette position"
+  | Touche -> Log.log "Bateau déjà touché à cette position"
+  | Rate -> Log.log "Position déjà frappée"
+  | Coule -> Log.log "Bateau déjà coulé à cette position"
 
 (* méthode qui vérifie si la partie est terminée (si un plateau se retrouve avec tout ses bateaux coulés)*)
 let endgame (p : plateau) : bool = List.for_all (fun x -> x = []) p.ships
