@@ -2,6 +2,7 @@ module Plateau = Bataille_navale.Plateau
 module Bot = Bataille_navale.Bot
 module Log = Bataille_navale.Log
 module Game = Bataille_navale.Game
+module Game_view = Bataille_navale.Game_view
 
 (** Demande à l'utilisateur de placer des bateaux sur le plateau.
     @param p Le plateau sur lequel les bateaux doivent être placés. *)
@@ -63,12 +64,12 @@ let rec boucle_jeu (gs : Game.game_state) (pl : Game.player) : unit =
   (match pl with
   | Game.Player1 -> print_endline "Plateau du joueur 1, au tour du joueur 2 de jouer."
   | Game.Player2 -> print_endline "Plateau du joueur 2, au tour du joueur 1 de jouer.");
-  Game.display (Game.view gs pl);
+  Game_view.display (Game.view gs pl);
   print_endline "Coordonnées du prochain tir : ";
   let tir_x = print_string "x : "; Excp.coord() in
   let tir_y = print_string "y : "; Excp.coord() in
   let display_and_next new_gs next_player =
-    Game.display (Game.view new_gs pl);
+    Game_view.display (Game.view new_gs pl);
     freeze 3.;
     clear ();  
     boucle_jeu new_gs next_player
