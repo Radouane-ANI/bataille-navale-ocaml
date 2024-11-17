@@ -1,6 +1,6 @@
 open Game
 
-type bot = game_view -> play
+type bot = Game_view.game_view -> play
 
 (** Place les bateaux sur le plateau de maniere aleatoire.
     @param p Le plateau sur lequel les bateaux doivent être placés. *)
