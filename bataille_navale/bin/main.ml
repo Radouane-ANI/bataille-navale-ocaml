@@ -1,5 +1,6 @@
 module Plateau = Bataille_navale.Plateau
 module Bot = Bataille_navale.Bot
+module Log = Bataille_navale.Log
 module Game = Bataille_navale.Game
 
 (** Demande à l'utilisateur de placer des bateaux sur le plateau.
@@ -89,6 +90,7 @@ let rec boucle_jeu (gs : Game.game_state) (pl : Game.player) : unit =
   | Game.Player2 -> next_move Game.Player1
   
 let () =
+ Log.set_verbose true;  (* Active les logs *)
   Random.self_init ();
   let rec start () = 
     let plateau_1 = Plateau.init_plateau () in
