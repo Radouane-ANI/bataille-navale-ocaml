@@ -7,3 +7,6 @@ https://moule.informatique.univ-paris-diderot.fr/buisine/domino_Enzo_Jawad/-/iss
 https://moule.informatique.univ-paris-diderot.fr/buisine/domino_Enzo_Jawad/-/issues/15
 https://moule.informatique.univ-paris-diderot.fr/aouini/bataille-navalle/-/issues/13
 https://moule.informatique.univ-paris-diderot.fr/aouini/bataille-navalle/-/issues/17
+https://moule.informatique.univ-paris-diderot.fr/dass/szpunar-das-go/-/issues/28
+https://moule.informatique.univ-paris-diderot.fr/aitalibr/carcassone/-/issues/20
+https://moule.informatique.univ-paris-diderot.fr/aitalibr/carcassone/-/merge_requests/3
