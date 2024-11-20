@@ -2,6 +2,7 @@
 let rec coord () : int =
   try 
     let input = read_line () in
+    if input = "q" || input = "Q" then (print_endline "Fin du jeu !"; exit 0) else 
     let n = int_of_string input in
     if n >= 0 && n < 10 then
       n
@@ -22,6 +23,7 @@ let rec coord () : int =
 let rec orientation_bateau () : bool = 
   let rep = String.lowercase_ascii (String.trim (read_line ())) in
   match rep with 
+  | "q" | "Q" -> print_endline "Fin du jeu !"; exit 0
   | "o" | "O" -> true
   | "n" | "N" -> false
   | _ -> 

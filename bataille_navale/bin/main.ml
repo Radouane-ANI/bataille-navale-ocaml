@@ -9,7 +9,7 @@ module Game_view = Bataille_navale.Game_view
 let demander_placement_bateau (p : Plateau.plateau) : unit =
   let rec demander_coordonnees (longueur : int) =
     print_endline ("Placement du bateau de taille " ^ string_of_int longueur);
-    print_endline "Entrez les coordonnées de départ du bateau (x y) :";
+    print_endline "Entrez les coordonnées de départ du bateau (x y) : (\"Q\" pour quitter à tout moment.)";
     let x = print_string "x : "; Excp.coord() in
     let y = print_string "y : "; Excp.coord() in
     print_endline "Le bateau est-il horizontal ? (o/n) :";
@@ -62,8 +62,8 @@ let init_mode_playervsplayer(p1 : Plateau.plateau) (p2 : Plateau.plateau) : unit
 (* méthode de la boucle principale du jeu*)
 let rec boucle_jeu (gs : Game.game_state) (pl : Game.player) : unit =
   (match pl with
-  | Game.Player1 -> print_endline "Plateau du joueur 1, au tour du joueur 2 de jouer."
-  | Game.Player2 -> print_endline "Plateau du joueur 2, au tour du joueur 1 de jouer.");
+  | Game.Player1 -> print_endline "Plateau du joueur 1, au tour du joueur 2 de jouer. (\"Q\" pour quitter à tout moment.)"
+  | Game.Player2 -> print_endline "Plateau du joueur 2, au tour du joueur 1 de jouer. (\"Q\" pour quitter à tout moment.)");
   Game_view.display (Game.view gs pl);
   print_endline "Coordonnées du prochain tir : ";
   let tir_x = print_string "x : "; Excp.coord() in
