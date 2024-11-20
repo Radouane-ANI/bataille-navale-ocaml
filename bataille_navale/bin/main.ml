@@ -8,6 +8,7 @@ module Game_view = Bataille_navale.Game_view
     @param p Le plateau sur lequel les bateaux doivent être placés. *)
 let demander_placement_bateau (p : Plateau.plateau) : unit =
   let rec demander_coordonnees (longueur : int) =
+    Plateau.afficher_plateau p; 
     print_endline ("Placement du bateau de taille " ^ string_of_int longueur);
     print_endline "Entrez les coordonnées de départ du bateau (x y) : (\"Q\" pour quitter à tout moment.)";
     let x = print_string "x : "; Excp.coord() in
