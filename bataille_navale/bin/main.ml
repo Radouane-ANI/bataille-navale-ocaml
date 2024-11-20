@@ -106,7 +106,6 @@ let () =
     *)
 
     (* Initialize for player vs player mode directly *)
-    Plateau.afficher_plateau plateau_1;
     init_mode_playervsplayer plateau_1 plateau_2;
     clear();
     print_endline "Bateaux placés, place au jeu !";
